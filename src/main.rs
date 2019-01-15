@@ -2,10 +2,17 @@
 extern crate actix;
 extern crate actix_web;
 extern crate env_logger;
-extern crate openssl;
+extern crate futures;
+extern crate serde_derive;
+extern crate serde_json;
 
-use actix_web::{http, middleware, server, App, Error, HttpRequest, HttpResponse};
+use actix_web::{App, Error, fs, HttpRequest, HttpResponse, Result, server};
+use actix_web::{middleware};
+use actix_web::{http};
+// use actix_web::http::{Method, StatusCode};
 use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
+// use futures::{Future, future::ok as fut_ok};
+// use std::str;
 
 /// simple handle
 fn index(req: &HttpRequest) -> Result<HttpResponse, Error> {
@@ -13,6 +20,10 @@ fn index(req: &HttpRequest) -> Result<HttpResponse, Error> {
     Ok(HttpResponse::Ok()
         .content_type("text/plain")
         .body("Welcome!"))
+}
+
+fn get_image(req: &HttpRequest) -> Result<fs::NamedFile> {
+    Ok(fs::NamedFile::open("./src/assets/256.png")?)
 }
 
 fn main() {
@@ -41,6 +52,7 @@ fn main() {
                     .header("LOCATION", "/index.html")
                     .finish()
             }))
+            .resource("/image", |r| r.f(get_image))
     }).bind_ssl("127.0.0.1:8443", builder)
         .unwrap()
         .start();
