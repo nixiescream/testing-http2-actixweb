@@ -1,0 +1,13 @@
+[package]
+name = "testing-http2"
+version = "0.1.0"
+authors = ["Núria Balaguer <nyxscream@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+# actix-web = { version = "0.7", features = ["alpn"] }
+# openssl = { version = "0.10", features = ["v110"] }
+env_logger = "0.5"
+openssl = { version="0.10" }
+actix = "0.7"
+actix-web = { version = "0.7", features=["ssl"] }
